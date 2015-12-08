@@ -37,7 +37,17 @@ if (adjective == null){
    adjective = "nature";
 }
 
-madlib += adjective + " though, so they will continue to do nothing.";
+madlib += adjective + " though, so they will continue to do nothing. Tune in ";
+
+time = prompt("Please give me a number");
+
+if (time < 1 || time > 12) {
+   time = time + " minutes after the hour.";
+} else {
+   time = " at " + time + " o'clock";
+}
+
+madlib = madlib + time;
 
 // Print the madlib to the console.
 console.log(madlib);
