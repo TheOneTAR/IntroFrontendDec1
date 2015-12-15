@@ -44,7 +44,7 @@ time = prompt("Please give me a number");
 if (time < 1 || time > 12) {
    time = time + " minutes after the hour.";
 } else {
-   time = " at " + time + " o'clock";
+   time = " at " + time + " o'clock.";
 }
 
 madlib = madlib + time;
