@@ -11,6 +11,8 @@ window.onload = function() {
    // Add the toggle event listeners to the dice.
    die_1.html.addEventListener('click', toggle_die_hold);
    die_2.html.addEventListener('click', toggle_die_hold);
+
+   state = document.getElementById('state');
 }
 
 // an array that has the dice image paths
@@ -21,6 +23,20 @@ var die_1;
 var die_2; 
 
 var die_to_roll = [];
+
+// Goals to be rolled.
+var goals = [
+      ['1.png', '2.png'],
+      ['angry.png', '4.png'],
+      ['5.png', '6.png']
+   ];
+
+var current_goal = 0;
+
+var state;
+
+var stage = ['Stage 1', 'Stage 2', 'Stage 3', 'WINNER!'];
+var stage_class = ['stage1', 'stage2', 'stage3', 'winner'];
 
 function Die(id) {
    // Set the initial side of the die to 1
@@ -40,22 +56,6 @@ function Die(id) {
       this.html.innerHTML = "<img src='" + this.side + "'/>";
    };
 
-   this.hold_die = function(hold) {
-      // if hold is true, remove die from die_to_roll
-      // and toggle hold style
-      if (hold) {
-         this.html.className = "hold";
-         var index = die_to_roll.indexOf(this);
-         if (index > -1) {
-             die_to_roll.splice(index, 1);
-         }
-         this.held = true;
-      } else {
-         this.html.className = "";
-         die_to_roll.push(this);
-         this.held = false;
-      }
-   };
 }
 
 /**
@@ -67,6 +67,9 @@ function roll() {
    for (var i = 0; i < die_to_roll.length; i++) {
       die_to_roll[i].roll();
    };
+
+   // Check to see if a stage is progressed
+   check_game();
 }
 
 /**
@@ -78,10 +81,64 @@ function roll() {
  */
 function toggle_die_hold(event){
    if (event.target.parentElement === die_1.html) {
-      die_1.hold_die(!die_1.held);
+      hold_die(!die_1.held, die_1);
    } else if (event.target.parentElement === die_2.html) {
-      die_2.hold_die(!die_2.held);
+      hold_die(!die_2.held, die_2);
    }
+}
+
+/**
+ * Toggles the hold state of a die, 
+ * first checking if it's legal.
+ */
+function hold_die(hold, die) {
+      // if hold is true, remove die from die_to_roll
+      // and toggle hold style
+      if (die.side == '6.png') {
+         state.innerHTML += " You cannot hold a six";
+      } else if (hold ) {
+         die.html.className = "hold";
+         var index = die_to_roll.indexOf(die);
+         if (index > -1 ) {
+             die_to_roll.splice(index, 1);
+         }
+         die.held = true;
+      } else {
+         die.html.className = "";
+         die_to_roll.push(die);
+         die.held = false;
+      }
+}
+
+/**
+ * Check to see if the dice are angry.
+ * Reset the stage to 0 if angry, 
+ * announce the anger, and unhold all dice.
+ */
+function check_game() {
+   if (die_1.side == 'angry.png' & die_2.side == 'angry.png') {
+      // ANGRY!!
+      state.textContent = "You're ANGRY!! Back to Stage 1";
+      state.className = "angry";
+   } else {
+      if (goals[current_goal].indexOf(die_1.side) != -1 &&
+            goals[current_goal].indexOf(die_2.side) != -1 && 
+            die_2.side != die_1.side) {
+         // Update goal
+         current_goal++;
+
+         // Unhold all die
+         if (die_1.held) {
+            hold_die(false, die_1);
+         }
+         if (die_2.held) {
+            hold_die(false, die_2);
+         }
+      }
+      state.textContent = stage[current_goal];
+      state.className = stage_class[current_goal];
+   }
+
 }
 
 /**
