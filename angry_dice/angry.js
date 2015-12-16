@@ -1,3 +1,13 @@
+/**
+ * Angry Dice game implementation.
+ * ---------------------------------
+ * Play the game Angry Dice without any dice! Site knows
+ * and enforces the rules of the games.
+ *
+ * Author: Tiffany Caires
+ * Date: 12/16/15
+ */
+
 window.onload = function() {
    document.getElementById("roll").onclick = roll;
 
@@ -96,13 +106,16 @@ function hold_die(hold, die) {
       // and toggle hold style
       if (die.side == '6.png') {
          state.innerHTML += " You cannot hold a six";
-      } else if (hold ) {
+      } else if (hold && goals[current_goal].indexOf(die.side) != -1) {
          die.html.className = "hold";
          var index = die_to_roll.indexOf(die);
          if (index > -1 ) {
              die_to_roll.splice(index, 1);
          }
          die.held = true;
+      } else if (hold) {
+         state.innerHTML += 
+            " You cannot hold a dice that isn't part of the current goal stage";
       } else {
          die.html.className = "";
          die_to_roll.push(die);
@@ -137,8 +150,32 @@ function check_game() {
       }
       state.textContent = stage[current_goal];
       state.className = stage_class[current_goal];
-   }
 
+      if (current_goal == 3) {
+         winner();
+      }
+   }
+}
+
+/** 
+ * Hides the roll button and asks the user 
+ * if they wish to play again.
+ */
+function winner() {
+   document.getElementById("roll").className = "hidden";
+   document.getElementById("again").className = "";
+   document.getElementById("yes_again").onclick = play_again;
+}
+
+/**
+ * Resets the game to play again.
+ */
+function play_again() {
+   document.getElementById("roll").className = "";
+   document.getElementById("again").className = "hidden";
+   document.getElementById("yes_again").removeAttribute("onclick");
+   current_goal = 0;
+   check_game();
 }
 
 /**

@@ -6,3 +6,7 @@ span {
 .hold {
    border: 3px solid #cc0033;
 }
+
+.hidden {
+   display: none;
+}
