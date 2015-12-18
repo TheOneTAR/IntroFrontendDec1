@@ -131,6 +131,7 @@ function hold_die(hold, die) {
 function check_game() {
    if (die_1.side == 'angry.png' & die_2.side == 'angry.png') {
       // ANGRY!!
+      current_goal = 0;
       state.textContent = "You're ANGRY!! Back to Stage 1";
       state.className = "angry";
    } else {
